@@ -1,5 +1,7 @@
 import csv
 import sys
+import requests
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel, QScrollArea, QFrame
 
@@ -42,7 +44,8 @@ class MainWindow(QMainWindow):
     def populate_mod_data(self):
         with open('data/mainmenu.csv', 'r', encoding='utf-8') as f:
             reader = csv.DictReader(f)
-            for row in reader:
+            for index, row in enumerate(reader, start=1):
+                row_number = str(index)
                 name = row['Mod_Name']
                 description = row['Description']
                 thumbnail = row['Thumbnail_URL']
@@ -50,8 +53,8 @@ class MainWindow(QMainWindow):
                 authors = row['Author_Name']
                 downloads = row['Downloads']
 
-
                 self.add_mod_info(
+                    row_number,
                     name,
                     webpage_URL,
                     description,
@@ -61,15 +64,26 @@ class MainWindow(QMainWindow):
                 )
                 print(row)
 
-    def add_mod_info(self, name, link, description, thumbnail, authors, downloads):
+    def add_mod_info(self, row_number, name, link, description, thumbnail, authors, downloads):
+        # Load the thumbnail image from the URL and display it
+        thumbnail_label = QLabel()
+        pixmap = QPixmap()
+        pixmap.loadFromData(requests.get(thumbnail).content)
+        thumbnail_label.setPixmap(pixmap.scaled(100, 100, Qt.KeepAspectRatio))
+
         labels = [
-            QLabel(f"<a href='{thumbnail}'>Mod Thumbnail Link"),
+            QLabel(f"\n\n{row_number}."),
+            #QLabel(f"<a href='{thumbnail}'>Mod Thumbnail Link"),
             QLabel(f"Mod Name: {name}"),
             QLabel(f"Mod Description: {description}"),
             QLabel(f"<a href='{link}'>Mod Link"),
             QLabel(f"Mod Author(s): {authors}"),
             QLabel(f"Mod Download Count: {downloads}\n\n"),
         ]
+
+        # Add the image label first
+        self.scroll_layout.addWidget(thumbnail_label)
+
         for label in labels:
             # Set the text format to allow for rich text (HTML)
             label.setTextFormat(Qt.RichText)
@@ -77,6 +91,7 @@ class MainWindow(QMainWindow):
             label.setOpenExternalLinks(True)
             # Add the label to the layout
             self.scroll_layout.addWidget(label)
+
 
     def center_window(self):
         # Get the geometry of the window
