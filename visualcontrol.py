@@ -3,8 +3,58 @@ import sys
 import requests
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel, QScrollArea, QFrame
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel, QScrollArea, QHBoxLayout, QFrame
 
+class ModEntry(QWidget):
+    def __init__(self, row_number, name, description, thumbnail_url, authors, downloads, web_url, parent=None):
+        super(ModEntry, self).__init__(parent)
+
+        # Load the thumbnail image from the URL and display it
+        thumbnail_label = QLabel()
+        pixmap = QPixmap()
+        pixmap.loadFromData(requests.get(thumbnail_url).content)
+        thumbnail_label.setPixmap(pixmap.scaled(100, 100, Qt.KeepAspectRatio))
+
+        # Create labels for name, description, author, downloads, and web URL
+        name_label = QLabel(name)
+        description_label = QLabel(description)
+        author_label = QLabel(f"Author(s): {authors}")
+        download_label = QLabel(f"Downloads: {downloads}")
+        web_url_label = QLabel(f"<a href='{web_url}'>Web URL</a>")
+
+        # Set background color for each label (sub-boxes)
+        thumbnail_label.setStyleSheet("background-color: white;")
+        name_label.setStyleSheet("background-color: blue; color: white;")
+        description_label.setStyleSheet("background-color: green; color: white;")
+        author_label.setStyleSheet("background-color: lightblue;")
+        download_label.setStyleSheet("background-color: lightgreen;")
+        web_url_label.setStyleSheet("background-color: lightyellow;")
+
+        # Allow links to be clickable and open in a web browser
+        web_url_label.setTextFormat(Qt.RichText)
+        web_url_label.setOpenExternalLinks(True)
+
+        # Create layout for the author, downloads, and web URL (single box)
+        bottom_layout = QHBoxLayout()
+        bottom_layout.addWidget(author_label)
+        bottom_layout.addWidget(download_label)
+        bottom_layout.addWidget(web_url_label)
+
+        # Create layouts for stacking name and description
+        text_layout = QVBoxLayout()
+        text_layout.addWidget(name_label)
+        text_layout.addWidget(description_label)
+        text_layout.addLayout(bottom_layout)
+
+        main_layout = QHBoxLayout()
+        main_layout.addWidget(thumbnail_label)
+        main_layout.addLayout(text_layout)
+
+        # Set the layout for this widget
+        self.setLayout(main_layout)
+
+        # Set background color for the entire mod entry (main box)
+        self.setStyleSheet("background-color: lightgray; border: 1px solid black;")
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -53,45 +103,8 @@ class MainWindow(QMainWindow):
                 authors = row['Author_Name']
                 downloads = row['Downloads']
 
-                self.add_mod_info(
-                    row_number,
-                    name,
-                    webpage_URL,
-                    description,
-                    thumbnail,
-                    authors,
-                    downloads,
-                )
-                print(row)
-
-    def add_mod_info(self, row_number, name, link, description, thumbnail, authors, downloads):
-        # Load the thumbnail image from the URL and display it
-        thumbnail_label = QLabel()
-        pixmap = QPixmap()
-        pixmap.loadFromData(requests.get(thumbnail).content)
-        thumbnail_label.setPixmap(pixmap.scaled(100, 100, Qt.KeepAspectRatio))
-
-        labels = [
-            QLabel(f"\n\n{row_number}."),
-            #QLabel(f"<a href='{thumbnail}'>Mod Thumbnail Link"),
-            QLabel(f"Mod Name: {name}"),
-            QLabel(f"Mod Description: {description}"),
-            QLabel(f"<a href='{link}'>Mod Link"),
-            QLabel(f"Mod Author(s): {authors}"),
-            QLabel(f"Mod Download Count: {downloads}\n\n"),
-        ]
-
-        # Add the image label first
-        self.scroll_layout.addWidget(thumbnail_label)
-
-        for label in labels:
-            # Set the text format to allow for rich text (HTML)
-            label.setTextFormat(Qt.RichText)
-            # Allow links to be clickable and open in a web browser
-            label.setOpenExternalLinks(True)
-            # Add the label to the layout
-            self.scroll_layout.addWidget(label)
-
+                mod_entry = ModEntry(row_number, name, description, thumbnail, authors, downloads, webpage_URL, self)
+                self.scroll_layout.addWidget(mod_entry)
 
     def center_window(self):
         # Get the geometry of the window
