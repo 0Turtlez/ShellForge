@@ -1,9 +1,10 @@
 import csv
 import sys
 import requests
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel, QScrollArea, QHBoxLayout, QFrame
+
 
 class ModEntry(QWidget):
     def __init__(self, row_number, name, description, thumbnail_url, authors, downloads, web_url, parent=None):
@@ -66,6 +67,8 @@ class MainWindow(QMainWindow):
     def init_ui(self):
         ''' Intialize the main UI settings'''
         self.setWindowTitle('Shell Forge')
+        self.setWindowIcon(QIcon('Shellforgeicon.jpg'))
+
         self.resize(2000, 1500)
         self.center_window()
 
@@ -120,9 +123,6 @@ class MainWindow(QMainWindow):
         # Move the window to the center point
         window_geometry.moveCenter(center_point)
         self.move(window_geometry.topLeft())
-        # Replace this with reading the csv
-
-
 
 
 
