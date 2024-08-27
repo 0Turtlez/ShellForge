@@ -11,25 +11,25 @@ class ModEntry(QWidget):
         super(ModEntry, self).__init__(parent)
 
         # Load the thumbnail image from the URL and display it
-        thumbnail_label = QLabel()
-        pixmap = QPixmap()
-        pixmap.loadFromData(requests.get(thumbnail_url).content)
-        thumbnail_label.setPixmap(pixmap.scaled(100, 100, Qt.KeepAspectRatio))
-
+        thumbnail_label = self.populate_images(thumbnail_url)
+        #thumbnail_label = self.populate_blank_images()
         # Create labels for name, description, author, downloads, and web URL
         name_label = QLabel(name)
-        description_label = QLabel(description)
         author_label = QLabel(f"Author(s): {authors}")
+        description_label = QLabel(description)
         download_label = QLabel(f"Downloads: {downloads}")
         web_url_label = QLabel(f"<a href='{web_url}'>Web URL</a>")
 
+        # Sets labels maximum / fixed sizes for thumbnail, title
+        thumbnail_label.setFixedSize(100,100)
+        name_label.setMaximumSize(200, 25)
+        author_label.setMaximumSize(200, 25)
+        description_label.setMaximumSize(750, 400)
+        description_label.setWordWrap(True)
+
         # Set background color for each label (sub-boxes)
-        thumbnail_label.setStyleSheet("background-color: white;")
-        name_label.setStyleSheet("background-color: blue; color: white;")
-        description_label.setStyleSheet("background-color: green; color: white;")
-        author_label.setStyleSheet("background-color: lightblue;")
-        download_label.setStyleSheet("background-color: lightgreen;")
-        web_url_label.setStyleSheet("background-color: lightyellow;")
+        self.set_label_colors(thumbnail_label,name_label, author_label, description_label, download_label, web_url_label)
+
 
         # Allow links to be clickable and open in a web browser
         web_url_label.setTextFormat(Qt.RichText)
@@ -37,18 +37,26 @@ class ModEntry(QWidget):
 
         # Create layout for the author, downloads, and web URL (single box)
         bottom_layout = QHBoxLayout()
-        bottom_layout.addWidget(author_label)
-        bottom_layout.addWidget(download_label)
         bottom_layout.addWidget(web_url_label)
+        bottom_layout.addWidget(download_label)
 
         # Create layouts for stacking name and description
+        title_bar_layout = QHBoxLayout()
+        title_bar_layout.addWidget(name_label)
+        title_bar_layout.addWidget(author_label)
+        title_bar_layout.setAlignment(Qt.AlignLeft)
+
+
+
+        # Text Stack
         text_layout = QVBoxLayout()
-        text_layout.addWidget(name_label)
+        text_layout.addLayout(title_bar_layout)
         text_layout.addWidget(description_label)
         text_layout.addLayout(bottom_layout)
 
         main_layout = QHBoxLayout()
         main_layout.addWidget(thumbnail_label)
+        main_layout.addSpacing(0)
         main_layout.addLayout(text_layout)
 
         # Set the layout for this widget
@@ -56,6 +64,29 @@ class ModEntry(QWidget):
 
         # Set background color for the entire mod entry (main box)
         self.setStyleSheet("background-color: lightgray; border: 1px solid black;")
+
+    def populate_images(self, thumbnail_url):
+        thumbnail_label = QLabel()
+        pixmap = QPixmap()
+        pixmap.loadFromData(requests.get(thumbnail_url).content)
+        thumbnail_label.setPixmap(pixmap.scaled(100, 100, Qt.KeepAspectRatio))
+        return thumbnail_label
+
+    def populate_blank_images(self):
+        thumbnail_label = QLabel()
+        pixmap = QPixmap(100, 100)
+        pixmap.fill(Qt.transparent)
+        thumbnail_label.setPixmap(pixmap)
+        return thumbnail_label
+
+    def set_label_colors(self, thumbnail_label, name_label, author_label, description_label, download_label, web_url_label):
+        thumbnail_label.setStyleSheet("background-color: white;")
+        name_label.setStyleSheet("background-color: blue; color: white;")
+        description_label.setStyleSheet("background-color: green; color: white;")
+        author_label.setStyleSheet("background-color: lightblue;")
+        download_label.setStyleSheet("background-color: lightgreen;")
+        web_url_label.setStyleSheet("background-color: lightyellow;")
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -69,7 +100,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('Shell Forge')
         self.setWindowIcon(QIcon('Shellforgeicon.jpg'))
 
-        self.resize(2000, 1500)
+        self.resize(1000, 750)
         self.center_window()
 
 
@@ -133,10 +164,15 @@ app.exec_()
 
 
 
+
 '''
 TODO:
-- Get images to visualize on windo 
+- Get images to visualize on window
 - Favoritess
+- Image Caching
+- Install from pre installed versions that have already been installed to save bandwidth / Space
 
+Complete:
+- Create a method that makes it easy to comment out image creation
 
 '''
