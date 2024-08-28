@@ -34,18 +34,20 @@ def get_response_data(url, parameters, min_downloads=0):
 def parse_data_mainmenu(data):
 
     with open(data_directory + 'mainmenu.csv', 'w', newline='', encoding='utf-8') as mainmenu:
-        fieldnames = ['Mod_Name', 'Description', 'Thumbnail_URL', 'WebPage_URL', 'Author_Name', 'Downloads']
+        fieldnames = ['Mod_Id', 'Mod_Name', 'Description', 'Thumbnail_URL', 'WebPage_URL', 'Author_Name', 'Downloads']
         writer = csv.DictWriter(mainmenu, fieldnames=fieldnames)
         writer.writeheader()
 
         for item in data:
             writer.writerow({
+                'Mod_Id': item['logo'].get('modId')if item['logo'] else None,
                 'Mod_Name': item['name'],
                 'Description': item['summary'],
                 'Thumbnail_URL': item['logo'].get('url') if item['logo'] else None,
                 'WebPage_URL': item['links'].get('websiteUrl') if item['links'] else None,
                 'Author_Name': item['authors'][0].get('name') if item['authors'] else 'Unknown',
                 'Downloads': item['downloadCount'],
+
             })
     print("Successfully wrote to file")
 
