@@ -11,8 +11,8 @@ class ModEntry(QWidget):
         super(ModEntry, self).__init__(parent)
 
         # Load the thumbnail image from the URL and display it
-        thumbnail_label = self.populate_images(thumbnail_url)
-        #thumbnail_label = self.populate_blank_images()
+
+        thumbnail_label = self.check_internet_connection(thumbnail_url)
         # Create labels for name, description, author, downloads, and web URL
         name_label = QLabel(name)
         author_label = QLabel(f"Author(s): {authors}")
@@ -64,6 +64,22 @@ class ModEntry(QWidget):
 
         # Set background color for the entire mod entry (main box)
         self.setStyleSheet("background-color: lightgray; border: 1px solid black;")
+
+    def check_internet_connection(self, thumbnail_url, url='https://www.google.com/', timeout=5):
+        try:
+            response = requests.get(url, timeout=timeout)
+            # status code is 200 (OK)
+            if response.status_code == 200:
+                thumbnail_label = self.populate_images(thumbnail_url)
+                return thumbnail_label
+            else:
+                print("Failed to connect to the internet")
+                thumbnail_label = self.populate_blank_images()
+                return thumbnail_label
+        except (requests.ConnectionError, requests.Timeout):
+            print("Failed to connect to the internet. Check your internet connection.")
+            thumbnail_label = self.populate_blank_images()
+            return thumbnail_label
 
     def populate_images(self, thumbnail_url):
         thumbnail_label = QLabel()
@@ -130,6 +146,7 @@ class MainWindow(QMainWindow):
             reader = csv.DictReader(f)
             for index, row in enumerate(reader, start=1):
                 row_number = str(index)
+                modId = row['Mod_Id']
                 name = row['Mod_Name']
                 description = row['Description']
                 thumbnail = row['Thumbnail_URL']
@@ -171,8 +188,8 @@ TODO:
 - Favoritess
 - Image Caching
 - Install from pre installed versions that have already been installed to save bandwidth / Space
-
 Complete:
+- Add error message for when not connected to internet
 - Create a method that makes it easy to comment out image creation
 
 '''
