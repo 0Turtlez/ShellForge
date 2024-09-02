@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ShellForge.iml" filepath="$PROJECT_DIR$/ShellForge.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/ShellForge.iml" filepath="$PROJECT_DIR$/.idea/ShellForge.iml" />
     </modules>
   </component>
 </project>
