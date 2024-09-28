@@ -1,4 +1,4 @@
-package curseapipuller
+package apihandling
 
 import (
 	"encoding/json"
