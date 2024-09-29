@@ -7,5 +7,5 @@ import (
 
 func main() {
 	apihandling.RunSort()
-	visualcontrol.MainMenu()
+	visualcontrol.RunMenu()
 }
