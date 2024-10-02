@@ -14,9 +14,9 @@ func clearScreen() {
 
 // Print a stylized header
 func printHeader() {
-	fmt.Println("========================================")
-	fmt.Println("🐢        ShellForge CLI Menu         🐢")
-	fmt.Println("========================================")
+	fmt.Println("=========================")
+	fmt.Println("🐢 ShellForge CLI Menu 🐢")
+	fmt.Println("=========================")
 	//fmt.Println("Not every shell is for hiding. Some are built to withstand")
 }
 
@@ -38,6 +38,8 @@ func handleSelection(selection string) {
 		fmt.Println("🛠️  Creating a New Modpack...")
 	case "3":
 		fmt.Println("🔎  Browsing Modpacks...")
+		clearScreen()
+		displayBrowseMenu()
 	case "0":
 		fmt.Println("❌ Exiting...")
 		os.Exit(0)

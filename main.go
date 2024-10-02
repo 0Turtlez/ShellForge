@@ -6,6 +6,19 @@ import (
 )
 
 func main() {
-	apihandling.RunSort()
+
+	go apihandling.RunSort()
 	visualcontrol.RunMenu()
 }
+
+/*
+TODO:
+# find a way to run the api while or after the menu is populated
+# and also ways to cache data, or more efficent ways to run app
+#
+------- Current Startup time: 156.131542ms -------
+
+# Add Sorting options
+# Multiple pagination
+#
+*/

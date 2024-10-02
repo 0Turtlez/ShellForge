@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	// "encoding/json"
 	// "io"
 	// "os"
@@ -15,7 +16,7 @@ import (
 
 const (
 	apiKey  = "$2a$10$LUzqSIJ0rMjnskXfHlMBUuquDmnr0RHAiiOrDequpxip3T36f3Y2S"
-	dataDir = "data"
+	dataDir = "data/"
 	url     = "https://api.curseforge.com/v1/mods/search" // The API URL
 )
 
@@ -25,14 +26,19 @@ var headers = map[string]string{
 }
 
 func RunSort() {
-	params := map[string]string{
-		"gameId":    "432",
-		"classId":   "6",
-		"sortOrder": "desc",
-		"sortField": "6",
-	}
+	for page := 0; page < 50; page++ {
+		params := map[string]string{
+			"gameId":    "432",
+			"classId":   "6",
+			"sortOrder": "desc",
+			"sortField": "6",
+			"index":     strconv.Itoa(page * 50),
+		}
 
-	sendRequestAndSave(url, params, filepath.Join(dataDir+"/dump.json"))
+		fileName := "page" + strconv.Itoa(page) + ".json"
+
+		sendRequestAndSave(url, params, filepath.Join(dataDir+fileName))
+	}
 }
 
 func sendRequestAndSave(url string, params map[string]string, filename string) error {
@@ -96,6 +102,5 @@ func sendRequestAndSave(url string, params map[string]string, filename string) e
 		return fmt.Errorf("error writing to file %s: %w", filename, err)
 	}
 
-	fmt.Printf("Successfully dumped to %s\n", filename)
 	return nil
 }
