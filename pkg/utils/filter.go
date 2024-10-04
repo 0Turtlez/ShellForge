@@ -16,5 +16,4 @@ func DisplayFilterOptions() {
 	fmt.Println("1. Sort by Name desending")
 	fmt.Println("1. Sort by Downloads desending")
 	fmt.Println("1. Sort by Popularity desending")
-
 }

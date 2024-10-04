@@ -2,14 +2,13 @@ package main
 
 import (
 	api "ShellForge/pkg/api"
-	"ShellForge/pkg/display"
 )
 
 func main() {
 	// startTime := time.Now()
 
 	go api.RunSort()
-	display.RunMenu("mainMenu")
+	main.RunMenu("mainMenu")
 	// elsapsedTime := time.Since(startTime)
 
 	// display.RunMenu(elsapsedTime)
