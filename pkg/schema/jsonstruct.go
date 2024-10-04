@@ -1,9 +1,13 @@
-package visualcontrol
+package schema
 
 type Root struct {
 	Data []ModData `json:"data"`
 }
 
+// PopularityRank 	= sort by popularity
+// DownloadCount 	= sort by downloads
+// Name 			= sort by name
+// ID				= sort by ID
 type ModData struct {
 	AllowModDistribution bool                 `json:"allowModDistribution"`
 	Authors              []Author             `json:"authors"`
@@ -75,8 +79,8 @@ type LatestFiles struct {
 }
 
 type Dependencies struct {
-	// TODO
-	// FIND A MOD WITH DEPENDICES TO FILL THIS OUT!!!
+	ModId         int `json:"modId"`
+	RealationType int `json:"relationType"`
 }
 
 type Hashes struct {

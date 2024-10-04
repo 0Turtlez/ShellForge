@@ -1,6 +1,8 @@
-package visualcontrol
+package display
 
 import (
+	"ShellForge/pkg/schema"
+	"ShellForge/pkg/utils"
 	"bufio"
 	"encoding/json"
 	"fmt"
@@ -19,16 +21,16 @@ func displayBrowseMenu() {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for {
-		clearScreen()
+		utils.ClearScreen()
 		fmt.Println("=================")
 		fmt.Println("🔎 Browse View 🔎")
 		fmt.Println("=================")
-		testStructs(page)
+		displayModInfo(page)
 
 		scanner.Scan()
 		choice := strings.TrimSpace(scanner.Text())
 
-		// Add limits
+		// TODO: ADD LIMITS TO SCROLL TO SIZE OF TOTAL ITEMS HIGH END AND LOW
 		switch choice {
 		case "f":
 			page++
@@ -40,7 +42,7 @@ func displayBrowseMenu() {
 	}
 }
 
-func testStructs(page int) {
+func displayModInfo(page int) {
 	jsonPath := dataFolderPath + "page" + strconv.Itoa(page) + ".json"
 	println(jsonPath)
 
@@ -59,7 +61,7 @@ func testStructs(page int) {
 	}
 
 	// Parse the JSON into the Root struct
-	var root Root
+	var root schema.Root
 	if err := json.Unmarshal(contents, &root); err != nil {
 		fmt.Printf("Error parsing JSON: %v\n", err)
 		return
@@ -77,3 +79,8 @@ func testStructs(page int) {
 		}
 	}
 }
+
+// TODO:
+// ADD INSTALL COMMAND
+// ADD GRAPHICALLY DISPLAY FOR INSTALLED MODS
+//

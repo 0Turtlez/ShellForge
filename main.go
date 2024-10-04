@@ -1,24 +1,23 @@
 package main
 
 import (
-	apihandling "ShellForge/APIHandling"
-	visualcontrol "ShellForge/VisualControl"
+	api "ShellForge/pkg/api"
+	"ShellForge/pkg/display"
 )
 
 func main() {
+	// startTime := time.Now()
 
-	go apihandling.RunSort()
-	visualcontrol.RunMenu()
+	go api.RunSort()
+	display.RunMenu("mainMenu")
+	// elsapsedTime := time.Since(startTime)
+
+	// display.RunMenu(elsapsedTime)
 }
 
 /*
 TODO:
-# find a way to run the api while or after the menu is populated
-# and also ways to cache data, or more efficent ways to run app
-#
-------- Current Startup time: 156.131542ms -------
+	Add Sorting options
+	wireshark ftb, and curse
 
-# Add Sorting options
-# Multiple pagination
-#
 */
